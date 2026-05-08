@@ -1,4 +1,2 @@
-venv/
+.streamlit/secrets.toml
 __pycache__/
-.env
-freelancer_data.json
