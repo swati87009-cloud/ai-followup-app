@@ -2,8 +2,11 @@ import streamlit as st
 import json
 import os
 import time
+from datetime import date
 
-# ---------------- PAGE CONFIG ----------------
+# =========================
+# PAGE CONFIG
+# =========================
 
 st.set_page_config(
     page_title="Freelancer Command Center",
@@ -11,163 +14,154 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------------- CUSTOM CSS ----------------
+# =========================
+# CUSTOM CSS
+# =========================
 
 st.markdown("""
 <style>
 
-html, body, [class*="css"]{
-    background-color:#0d1117;
-    color:white;
-    font-family:'Poppins',sans-serif;
+html, body, [class*="css"] {
+    font-family: 'Poppins', sans-serif;
+    background: #0f172a;
+    color: white;
 }
 
-.main{
-    background-color:#0d1117;
+.main {
+    background: #0f172a;
 }
 
-section[data-testid="stSidebar"]{
-    background:linear-gradient(180deg,#111827,#0f172a);
+.stTextInput input,
+.stTextArea textarea {
+    background: #111827 !important;
+    color: white !important;
+    border-radius: 12px !important;
+    border: 1px solid #374151 !important;
 }
 
-.stButton>button{
-    width:100%;
-    border:none;
-    border-radius:14px;
-    padding:12px;
-    font-weight:bold;
-    color:white;
-    background:linear-gradient(to right,#00c6ff,#0072ff);
-    transition:0.3s;
+.stDateInput input {
+    background: #111827 !important;
+    color: white !important;
 }
 
-.stButton>button:hover{
-    transform:scale(1.02);
-    background:linear-gradient(to right,#7f5af0,#2cb67d);
+.stButton button {
+    background: linear-gradient(90deg,#2563eb,#7c3aed);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: bold;
+    width: 100%;
+    transition: 0.3s;
 }
 
-.metric-card{
-    background:linear-gradient(135deg,#141e30,#243b55);
-    padding:22px;
-    border-radius:20px;
+.stButton button:hover {
+    transform: scale(1.02);
+}
+
+.card {
+    background: #111827;
+    padding: 20px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+    border: 1px solid #1f2937;
+}
+
+.metric-card {
+    background: linear-gradient(135deg,#1e293b,#111827);
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid #374151;
+}
+
+.footer {
     text-align:center;
-    color:white;
-    box-shadow:0px 0px 15px rgba(0,0,0,0.4);
-}
-
-.metric-card h2{
-    font-size:34px;
-}
-
-.card{
-    background:linear-gradient(145deg,#161b22,#1f2937);
-    padding:22px;
-    border-radius:20px;
-    margin-bottom:20px;
-    border:1px solid #2d3748;
-}
-
-.message-box{
-    background:#111827;
-    padding:15px;
-    border-radius:12px;
-    border-left:4px solid #00c6ff;
-    margin-top:10px;
-}
-
-.goal-box{
-    background:#161b22;
-    padding:25px;
-    border-radius:20px;
-    border:1px solid #2d3748;
-    text-align:center;
-}
-
-.footer{
-    text-align:center;
-    color:#64748b;
-    margin-top:30px;
+    margin-top:40px;
+    color:#9ca3af;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- DATA FILE ----------------
+# =========================
+# DATABASE
+# =========================
 
 DATA_FILE = "freelancer_data.json"
 
-# ---------------- LOAD DATA ----------------
+if not os.path.exists(DATA_FILE):
+    with open(DATA_FILE, "w") as f:
+        json.dump({}, f)
 
 def load_data():
-
-    if os.path.exists(DATA_FILE):
-
-        try:
-
-            with open(DATA_FILE, "r") as f:
-
-                content = f.read().strip()
-
-                if not content:
-                    return {}
-
-                return json.loads(content)
-
-        except:
-            return {}
-
-    return {}
-
-# ---------------- SAVE DATA ----------------
+    with open(DATA_FILE, "r") as f:
+        return json.load(f)
 
 def save_data(data):
-
     with open(DATA_FILE, "w") as f:
         json.dump(data, f, indent=4)
 
-# ---------------- SESSION ----------------
+data = load_data()
+
+# =========================
+# SESSION
+# =========================
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-data = load_data()
+if "user_id" not in st.session_state:
+    st.session_state.user_id = ""
 
-# ---------------- LOGIN / SIGNUP ----------------
+# =========================
+# LOGIN PAGE
+# =========================
 
 if not st.session_state.logged_in:
 
     st.title("🚀 Freelancer Command Center")
 
     st.markdown("""
-    ## Track Clients Like A Pro
-
-    🎯 Set Client Targets  
-    📊 Track YES / NO / No Response  
-    🚀 Build Consistency  
-    🔥 Stay Productive  
+    ### Track clients, followups & close more deals effortlessly.
     """)
-
-    st.divider()
 
     col1, col2 = st.columns(2)
 
-    # ---------------- CREATE ACCOUNT ----------------
+    # =========================
+    # CREATE ACCOUNT
+    # =========================
 
     with col1:
 
         st.subheader("🆕 Create Account")
 
-        create_name = st.text_input("👤 Your Name")
+        st.markdown("""
+        <div class="card">
+        Start your freelancer journey and manage clients smarter 🚀
+        </div>
+        """, unsafe_allow_html=True)
 
-        create_user_id = st.text_input("🆔 Create User ID")
+        create_name = st.text_input(
+            "👤 Your Name",
+            placeholder="Enter your name"
+        )
 
-        if st.button("Create Account"):
+        create_user_id = st.text_input(
+            "🆔 Create User ID",
+            placeholder="Choose a unique ID"
+        )
 
-            if create_user_id.strip() == "":
-                st.warning("Please enter User ID")
+        if st.button("🚀 Create Account"):
+
+            create_name = create_name.strip()
+            create_user_id = create_user_id.strip().lower()
+
+            if create_name == "" or create_user_id == "":
+                st.warning("⚠ Please fill all fields.")
 
             elif create_user_id in data:
-                st.error("❌ User already exists")
+                st.error("❌ User ID already exists.")
 
             else:
 
@@ -184,290 +178,329 @@ if not st.session_state.logged_in:
                 st.session_state.user_id = create_user_id
 
                 st.success("✅ Account Created Successfully!")
+                st.balloons()
 
                 time.sleep(1)
 
                 st.rerun()
 
-    # ---------------- LOGIN ----------------
+    # =========================
+    # LOGIN
+    # =========================
 
     with col2:
 
-        st.subheader("🔑 Login")
+        st.subheader("🔐 Login")
 
-        login_user_id = st.text_input("Enter Your User ID")
+        login_user_id = st.text_input(
+            "Enter User ID",
+            placeholder="Your user ID"
+        )
 
-        if st.button("Login"):
+        if st.button("✨ Open Dashboard"):
+
+            login_user_id = login_user_id.strip().lower()
 
             if login_user_id in data:
 
                 st.session_state.logged_in = True
                 st.session_state.user_id = login_user_id
 
-                st.success("✅ Login Successful!")
-
+                st.success("✅ Welcome Back!")
                 time.sleep(1)
 
                 st.rerun()
 
             else:
-                st.error("❌ User ID not found")
+                st.error("❌ User not found.")
 
-# ---------------- MAIN APP ----------------
+# =========================
+# DASHBOARD
+# =========================
 
 else:
 
     user_id = st.session_state.user_id
     user_data = data[user_id]
 
-    # ---------------- SAFE DEFAULTS ----------------
+    clients = user_data.get("clients", [])
 
-    user_data.setdefault("target", 0)
-    user_data.setdefault("completed_targets", 0)
-    user_data.setdefault("clients", [])
+    # =========================
+    # SIDEBAR
+    # =========================
 
-    save_data(data)
-
-    clients = user_data["clients"]
-
-    # ---------------- SIDEBAR ----------------
-
-    st.sidebar.title("🚀 Navigation")
-
-    page = st.sidebar.radio(
-        "Menu",
-        ["Dashboard", "Add Client"]
-    )
-
-    st.sidebar.divider()
+    st.sidebar.title("🚀 Command Center")
 
     st.sidebar.success(f"👤 {user_data['name']}")
 
     st.sidebar.info(
-        f"🏆 Targets Completed: {user_data['completed_targets']}"
+        f"🏆 Targets Completed: {user_data.get('completed_targets',0)}"
     )
 
-    if st.sidebar.button("Logout"):
+    st.sidebar.write(f"👥 Total Users: {len(data)}")
+
+    page = st.sidebar.radio(
+        "Navigate",
+        ["Dashboard", "Add Client"]
+    )
+
+    if st.sidebar.button("🚪 Logout"):
 
         st.session_state.logged_in = False
+        st.session_state.user_id = ""
 
         st.rerun()
 
-    # ---------------- TARGET PAGE ----------------
+    # =========================
+    # TARGET
+    # =========================
 
-    if user_data["target"] == 0:
+    if user_data.get("target", 0) == 0:
 
         st.title("🎯 Set Your Client Target")
 
-        st.markdown("""
-        <div class="goal-box">
-        <h2>How many clients do you want to contact?</h2>
-        <p>Set your target and build consistency 🚀</p>
-        </div>
-        """, unsafe_allow_html=True)
-
         target = st.number_input(
-            "Enter Client Target",
+            "How many clients do you want to manage?",
             min_value=1,
             step=1
         )
 
-        if st.button("Save Target"):
+        if st.button("🚀 Save Target"):
 
             user_data["target"] = target
-            user_data["clients"] = []
-
             save_data(data)
 
-            st.success("✅ Target Saved Successfully!")
-
+            st.success("✅ Target Saved!")
             time.sleep(1)
 
             st.rerun()
 
     else:
 
-        # ---------------- STATS ----------------
-
-        total_clients = len(clients)
-
-        yes_clients = len([
-            c for c in clients
-            if c["status"] == "YES"
-        ])
-
-        no_clients = len([
-            c for c in clients
-            if c["status"] == "NO"
-        ])
-
-        no_response = len([
-            c for c in clients
-            if c["status"] == "No Response"
-        ])
-
         target = user_data["target"]
 
-        progress = min(int((total_clients / target) * 100), 100)
-
-        # ---------------- TARGET COMPLETE ----------------
-
-        if total_clients >= target:
-
-            st.balloons()
-
-            st.success("🎉 Target Completed Successfully!")
-
-            st.info("🚀 Set Your New Client Target")
-
-            user_data["completed_targets"] += 1
-
-            user_data["target"] = 0
-
-            save_data(data)
-
-            time.sleep(2)
-
-            st.rerun()
-
-        # ---------------- DASHBOARD ----------------
+        # =========================
+        # DASHBOARD PAGE
+        # =========================
 
         if page == "Dashboard":
 
-            st.title(f"🔥 Welcome {user_data['name']}")
+            st.title("📊 Freelancer Dashboard")
 
-            st.markdown("### Your Freelancer Command Center")
+            yes_count = len([
+                c for c in clients if c["status"] == "Deal Closed"
+            ])
 
-            # ---------------- METRIC CARDS ----------------
+            no_count = len([
+                c for c in clients if c["status"] == "Cancelled"
+            ])
 
-            col1, col2, col3, col4 = st.columns(4)
+            pending_count = len([
+                c for c in clients if c["status"] == "No Response"
+            ])
 
-            with col1:
+            total_clients = len(clients)
+
+            c1, c2, c3, c4 = st.columns(4)
+
+            with c1:
                 st.markdown(f"""
                 <div class="metric-card">
                 <h2>{target}</h2>
-                <p>Client Target</p>
+                <p>🎯 Target</p>
                 </div>
                 """, unsafe_allow_html=True)
 
-            with col2:
+            with c2:
                 st.markdown(f"""
                 <div class="metric-card">
-                <h2>{yes_clients}</h2>
-                <p>YES</p>
+                <h2>{yes_count}</h2>
+                <p>🔥 Deals Closed</p>
                 </div>
                 """, unsafe_allow_html=True)
 
-            with col3:
+            with c3:
                 st.markdown(f"""
                 <div class="metric-card">
-                <h2>{no_clients}</h2>
-                <p>NO</p>
+                <h2>{no_count}</h2>
+                <p>❌ Cancelled</p>
                 </div>
                 """, unsafe_allow_html=True)
 
-            with col4:
+            with c4:
                 st.markdown(f"""
                 <div class="metric-card">
-                <h2>{no_response}</h2>
-                <p>No Response</p>
+                <h2>{pending_count}</h2>
+                <p>⏳ No Response</p>
                 </div>
                 """, unsafe_allow_html=True)
 
-            st.divider()
+            st.markdown("---")
 
-            # ---------------- PROGRESS ----------------
+            # =========================
+            # CLIENT CARDS
+            # =========================
 
-            st.subheader("📈 Target Progress")
+            if clients:
 
-            st.progress(progress)
+                for index, client in enumerate(clients):
 
-            st.write(f"{total_clients} / {target} Clients Added")
+                    st.markdown(f"""
+                    <div class="card">
+                    <h3>👤 {client['client_name']}</h3>
 
-            st.divider()
+                    <p>📱 {client['phone']}</p>
 
-            # ---------------- CLIENTS ----------------
+                    <p>📅 Follow-Up: {client['date']}</p>
 
-            st.subheader("📋 Clients Overview")
+                    <p>💬 {client['last_message']}</p>
 
-            if len(clients) == 0:
+                    <p>📌 Status: {client['status']}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
 
-                st.info("No clients added yet.")
+                    col1, col2, col3 = st.columns(3)
 
-            for i, client in enumerate(clients):
+                    # =========================
+                    # YES BUTTON
+                    # =========================
 
-                st.markdown('<div class="card">', unsafe_allow_html=True)
+                    with col1:
 
-                st.subheader(f"👤 {client['client_name']}")
+                        if st.button(
+                            f"🔥 Deal Closed {index}"
+                        ):
 
-                st.write(f"📅 Follow-Up Date: {client['date']}")
+                            clients[index]["status"] = "Deal Closed"
 
-                st.write(f"📌 Status: {client['status']}")
+                            save_data(data)
 
-                st.markdown(f"""
-                <div class="message-box">
-                💬 {client['last_message']}
-                </div>
-                """, unsafe_allow_html=True)
+                            st.rerun()
 
-                st.write("")
+                    # =========================
+                    # NO BUTTON
+                    # =========================
 
-                colA, colB, colC = st.columns(3)
+                    with col2:
 
-                # YES BUTTON
+                        if st.button(
+                            f"❌ Cancelled {index}"
+                        ):
 
-                if colA.button(f"🔥 YES {i}"):
+                            clients[index]["status"] = "Cancelled"
 
-                    client["status"] = "YES"
+                            save_data(data)
+
+                            st.rerun()
+
+                    # =========================
+                    # WHATSAPP BUTTON
+                    # =========================
+
+                    with col3:
+
+                        phone = str(client["phone"]).replace("+", "").replace(" ", "")
+
+                        whatsapp_message = (
+                            f"Hi {client['client_name']}, "
+                            f"just following up regarding our discussion."
+                        )
+
+                        whatsapp_url = (
+                            f"https://wa.me/91{phone}"
+                            f"?text={whatsapp_message.replace(' ', '%20')}"
+                        )
+
+                        st.markdown(
+                            f"""
+                            <a href="{whatsapp_url}" target="_blank">
+                                <button style="
+                                    background:#25D366;
+                                    color:white;
+                                    border:none;
+                                    padding:12px;
+                                    width:100%;
+                                    border-radius:12px;
+                                    font-weight:bold;
+                                    cursor:pointer;
+                                ">
+                                    💬 WhatsApp
+                                </button>
+                            </a>
+                            """,
+                            unsafe_allow_html=True
+                        )
+
+            else:
+
+                st.info("No clients added yet 🚀")
+
+            # =========================
+            # TARGET COMPLETE
+            # =========================
+
+            if total_clients >= target:
+
+                st.success(
+                    "🎉 Target Completed! Set your next client goal 🚀"
+                )
+
+                if st.button("🚀 Start New Target"):
+
+                    user_data["target"] = 0
+                    user_data["completed_targets"] += 1
 
                     save_data(data)
 
                     st.rerun()
 
-                # NO BUTTON
-
-                if colB.button(f"❌ NO {i}"):
-
-                    client["status"] = "NO"
-
-                    save_data(data)
-
-                    st.rerun()
-
-                # DELETE BUTTON
-
-                if colC.button(f"🗑 DELETE {i}"):
-
-                    clients.pop(i)
-
-                    save_data(data)
-
-                    st.rerun()
-
-                st.markdown("</div>", unsafe_allow_html=True)
-
-        # ---------------- ADD CLIENT ----------------
+        # =========================
+        # ADD CLIENT PAGE
+        # =========================
 
         if page == "Add Client":
 
             st.title("➕ Add New Client")
 
-            client_name = st.text_input("👤 Client Name")
+            st.markdown("""
+            <div class="card">
+            Add your client details and track followups easily 🚀
+            </div>
+            """, unsafe_allow_html=True)
 
-            last_message = st.text_area("💬 Client Last Message")
+            client_name = st.text_input(
+                "👤 Client Name"
+            )
 
-            followup_date = st.date_input("📅 Follow-Up Date")
+            client_phone = st.text_input(
+                "📱 WhatsApp Number",
+                placeholder="9876543210"
+            )
 
-            if st.button("Save Client"):
+            last_message = st.text_area(
+                "💬 Client Last Message"
+            )
 
-                if client_name.strip() == "" or last_message.strip() == "":
+            followup_date = st.date_input(
+                "📅 Follow-Up Date",
+                value=date.today()
+            )
 
-                    st.warning("Please fill all fields.")
+            if st.button("💾 Save Client"):
+
+                if (
+                    client_name.strip() == ""
+                    or client_phone.strip() == ""
+                    or last_message.strip() == ""
+                ):
+
+                    st.warning("⚠ Please fill all fields.")
 
                 else:
 
                     clients.append({
                         "client_name": client_name,
+                        "phone": client_phone,
                         "last_message": last_message,
                         "date": str(followup_date),
                         "status": "No Response"
@@ -476,12 +509,12 @@ else:
                     save_data(data)
 
                     st.success(
-                        "✅ Client Saved Successfully! Check your dashboard 🚀"
+                        f"✅ {client_name} saved successfully — Check your dashboard 🚀"
                     )
 
                     st.balloons()
 
-                    time.sleep(2)
+                    time.sleep(1.5)
 
                     st.rerun()
 

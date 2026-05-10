@@ -1,0 +1,36 @@
+{
+    "jani1233": {
+        "name": "janvi",
+        "target": 0,
+        "completed_targets": 0,
+        "clients": []
+    },
+    "jani12332": {
+        "name": "janvi",
+        "target": 20,
+        "completed_targets": 0,
+        "clients": [
+            {
+                "client_name": "ajay",
+                "phone": "8595394187",
+                "last_message": "hy here work with you",
+                "date": "2026-05-10",
+                "status": "No Response"
+            }
+        ]
+    },
+    "rinku": {
+        "name": "ajay",
+        "target": 20,
+        "completed_targets": 0,
+        "clients": [
+            {
+                "client_name": "janu",
+                "phone": "8595394187",
+                "last_message": "hy hello",
+                "date": "2026-05-08",
+                "status": "Cancelled"
+            }
+        ]
+    }
+}
