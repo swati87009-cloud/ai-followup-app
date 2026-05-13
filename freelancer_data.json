@@ -30,7 +30,69 @@
                 "last_message": "hy hello",
                 "date": "2026-05-08",
                 "status": "Cancelled"
+            },
+            {
+                "client_name": "ajay",
+                "phone": "",
+                "last_message": "we work together hope we  both enjoy",
+                "date": "2026-05-10",
+                "status": "Deal Closed"
+            },
+            {
+                "client_name": "akash",
+                "phone": "",
+                "last_message": "hy  who was going",
+                "lead_source": "LinkedIn",
+                "pitch_type": "Custom Proposal",
+                "client_niche": "Ecommerce",
+                "date": "2026-05-11",
+                "status": "Deal Closed"
+            },
+            {
+                "client_name": "janu",
+                "phone": "",
+                "last_message": "",
+                "lead_source": "LinkedIn",
+                "pitch_type": "Custom Offer",
+                "client_niche": "Agency",
+                "date": "2026-05-10",
+                "status": "Deal Closed"
+            },
+            {
+                "client_name": "swati",
+                "phone": "",
+                "last_message": "gm",
+                "lead_source": "Instagram",
+                "pitch_type": "Detailed Pitch",
+                "client_niche": "Agency",
+                "date": "2026-05-12",
+                "status": "No Response"
             }
         ]
+    },
+    "kahani": {
+        "name": "jawani",
+        "clients": []
+    },
+    "1234": {
+        "name": "jawani",
+        "goal": 20,
+        "clients": [
+            {
+                "client_name": "swati",
+                "phone": "",
+                "last_message": "hy",
+                "lead_source": "Twitter",
+                "pitch_type": "Detailed Pitch",
+                "client_niche": "Ecommerce",
+                "date": "2026-05-12",
+                "status": "No Response"
+            }
+        ]
+    },
+    "hyy": {
+        "name": "build strength",
+        "goal": 20,
+        "clients": []
     }
 }
